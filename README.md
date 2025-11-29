@@ -1,5 +1,4 @@
 ## Team Members
-
 ### Member 1
 - **Name:** Shen Xinyan
 - **ID:** 20232090
@@ -17,14 +16,6 @@
 
 ## Overview 项目概述
 A comprehensive fake news detection and verification platform designed to help users identify and combat misinformation. The system leverages community voting, expert analysis, and media literacy education to promote information accuracy.
-
-
-## Usage 使用说明
-
-1. **Browse News**: Visit the homepage to see the latest news articles with trust scores
-2. **Evaluate Trustworthiness**: Vote on whether you find news articles trustworthy or not
-3. **Join Discussions**: Leave comments and rate others' comments based on trustworthiness
-4. **Learn Media Literacy**: Access educational resources to improve your fake news detection skills
 
 ## Technology Stack
 
