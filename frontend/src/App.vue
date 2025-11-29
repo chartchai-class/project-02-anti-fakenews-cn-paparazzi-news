@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
-    <!-- 导航栏 -->
+    <!-- Navigation Bar -->
     <Navbar />
     
-    <!-- 主内容区域 -->
+    <!-- Main Content Area -->
     <main class="main-content">
       <div class="container">
         <router-view v-slot="{ Component }">
@@ -14,7 +14,7 @@
       </div>
     </main>
     
-    <!-- 页脚 -->
+    <!-- Footer -->
     <Footer />
   </div>
 </template>
@@ -35,7 +35,7 @@ export default {
   setup() {
     const authStore = useAuthStore();
     
-    // 在应用启动时初始化认证状态
+    // Initialize authentication state when app starts
     onMounted(() => {
       authStore.init();
     });

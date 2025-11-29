@@ -3,16 +3,16 @@
     <!-- 加载状态 -->
     <div v-if="isLoading" class="loading-container">
       <div class="loading-spinner"></div>
-      <p>正在加载新闻详情...</p>
+      <p>Loading news details...</p>
     </div>
     
     <!-- 错误状态 -->
     <div v-else-if="error" class="error-container">
       <div class="error-icon">⚠️</div>
-      <h3>加载失败</h3>
+      <h3>Failed to Load</h3>
       <p>{{ error }}</p>
-      <button class="retry-button" @click="fetchNewsDetail">重试</button>
-      <router-link to="/" class="back-home-link">返回首页</router-link>
+      <button class="retry-button" @click="fetchNewsDetail">Retry</button>
+      <router-link to="/" class="back-home-link">Back to Home</router-link>
     </div>
     
     <!-- 内容区域 -->
@@ -30,7 +30,7 @@
         
         <!-- 可信度评分 -->
         <div class="trust-rating-container">
-          <div class="trust-label">可信度评估</div>
+          <div class="trust-label">Credibility Assessment</div>
           <div class="trust-meter">
             <div class="trust-bar" :style="trustBarStyle"></div>
           </div>
@@ -54,28 +54,28 @@
         
         <!-- 投票区域 -->
         <div class="voting-section">
-          <h3 class="voting-title">您认为这是真新闻还是假新闻？</h3>
+          <h3 class="voting-title">Do you think this is real or fake news?</h3>
           <div class="voting-stats" v-if="totalVotes > 0">
             <div class="voting-stat-item">
-              <span class="voting-stat-label">真新闻:</span>
+              <span class="voting-stat-label">Real:</span>
               <div class="voting-progress-container">
                 <div class="voting-progress-bar voting-true" :style="{width: `${(votes.true/totalVotes)*100}%`}"></div>
               </div>
-              <span class="voting-stat-count">{{ votes.true }}票</span>
+              <span class="voting-stat-count">{{ votes.true }} votes</span>
             </div>
             <div class="voting-stat-item">
-              <span class="voting-stat-label">假新闻:</span>
+              <span class="voting-stat-label">Fake:</span>
               <div class="voting-progress-container">
                 <div class="voting-progress-bar voting-false" :style="{width: `${(votes.false/totalVotes)*100}%`}"></div>
               </div>
-              <span class="voting-stat-count">{{ votes.false }}票</span>
+              <span class="voting-stat-count">{{ votes.false }} votes</span>
             </div>
             <div class="voting-stat-item">
-              <span class="voting-stat-label">中立:</span>
+              <span class="voting-stat-label">Neutral:</span>
               <div class="voting-progress-container">
                 <div class="voting-progress-bar voting-neutral" :style="{width: `${(votes.neutral/totalVotes)*100}%`}"></div>
               </div>
-              <span class="voting-stat-count">{{ votes.neutral }}票</span>
+              <span class="voting-stat-count">{{ votes.neutral }} votes</span>
             </div>
           </div>
           <div class="voting-buttons">
@@ -86,7 +86,7 @@
               :class="{ 'voted': userVote === 'true' }"
             >
               <span>✅</span>
-              <span>真新闻</span>
+              <span>Real News</span>
             </button>
             <button 
               class="voting-button voting-false-btn" 
@@ -95,7 +95,7 @@
               :class="{ 'voted': userVote === 'false' }"
             >
               <span>❌</span>
-              <span>假新闻</span>
+              <span>Fake News</span>
             </button>
             <button 
               class="voting-button voting-neutral-btn" 
@@ -104,18 +104,18 @@
               :class="{ 'voted': userVote === 'neutral' }"
             >
               <span>🤔</span>
-              <span>中立</span>
+              <span>Neutral</span>
             </button>
           </div>
           <p v-if="voteMessage" class="voting-message" :class="voteMessage.includes('成功') ? 'success' : 'error'">{{ voteMessage }}</p>
           <p v-if="!canVote" class="voting-message permission-message">
-            登录成为成员后可参与投票
+            Please login to vote
           </p>
         </div>
         
         <!-- 分享按钮 -->
         <div class="share-section">
-          <span class="share-label">分享此新闻：</span>
+          <span class="share-label">Share this news:</span>
           <div class="share-buttons">
             <button class="share-button" aria-label="分享到社交媒体">
               <span>🔗</span>
@@ -131,15 +131,15 @@
         
         <!-- 评论区域 -->
         <div class="comments-section">
-          <h3 class="comments-title">评论 ({{ comments.length }})</h3>
+          <h3 class="comments-title">Comments ({{ comments.length }})</h3>
           
           <!-- 评论表单 -->
           <div class="comment-form">
-            <h4 class="comment-form-title">发表评论</h4>
+            <h4 class="comment-form-title">Post a Comment</h4>
             <textarea
               v-model="commentContent"
               class="comment-textarea"
-              :placeholder="canComment ? '请输入您的评论...' : '登录成为成员后可发表评论'"
+              :placeholder="canComment ? 'Enter your comment...' : 'Please login to comment'"
               rows="4"
               :disabled="isSubmittingComment || !canComment"
             ></textarea>
@@ -150,7 +150,7 @@
                 @click="submitComment"
                 :disabled="isSubmittingComment || !commentContent.trim() || commentContent.length < 5 || !canComment"
               >
-                {{ isSubmittingComment ? '提交中...' : '发表评论' }}
+                {{ isSubmittingComment ? 'Submitting...' : 'Post Comment' }}
               </button>
             </div>
             <p v-if="commentMessage" class="comment-message" :class="commentMessage.includes('成功') ? 'success' : 'error'">{{ commentMessage }}</p>
@@ -159,7 +159,7 @@
           <!-- 评论列表 -->
           <div class="comments-list" v-if="!isLoadingComments">
             <div v-if="comments.length === 0" class="no-comments">
-              <p>暂无评论，快来发表第一条评论吧！</p>
+              <p>No comments yet, be the first to comment!</p>
             </div>
             <div v-else v-for="comment in comments" :key="comment.id" class="comment-item">
               <img :src="comment.avatar || 'https://picsum.photos/id/1000/40/40'" :alt="comment.author" class="comment-avatar">
@@ -208,9 +208,9 @@
     <!-- 未找到状态 -->
     <div v-else class="not-found-container">
       <div class="not-found-icon">🔍</div>
-      <h3>新闻未找到</h3>
-      <p>抱歉，您请求的新闻不存在或已被删除。</p>
-      <router-link to="/" class="back-home-link">返回首页</router-link>
+      <h3>News Not Found</h3>
+      <p>Sorry, the requested news does not exist or has been deleted.</p>
+      <router-link to="/" class="back-home-link">Back to Home</router-link>
     </div>
   </div>
 </template>
@@ -274,9 +274,9 @@ export default {
     
     const trustLevelText = computed(() => {
       const levels = {
-        high: '高可信度',
-        medium: '中等可信度',
-        low: '低可信度'
+        high: 'High Credibility',
+        medium: 'Medium Credibility',
+        low: 'Low Credibility'
       };
       return levels[trustLevel.value] || '';
     });
@@ -302,15 +302,15 @@ export default {
       try {
         await newsStore.getNewsById(newsId.value);
       } catch (error) {
-        console.error('获取新闻详情失败，使用模拟数据');
-        // 清除错误状态
+        console.error('Failed to fetch news details, using mock data');
+        // Clear error state
         newsStore.clearError();
-        // 如果API失败，创建模拟新闻数据
+        // If API fails, create mock news data
         const mockNews = {
           id: newsId.value,
-          title: '模拟新闻标题：政府发布最新环保政策',
-          content: '<p>这是一条模拟新闻内容。据最新消息，政府今日发布了一系列环保政策，旨在减少碳排放和保护环境。</p><p>专家表示，这些政策将对未来几年的环境改善产生积极影响。</p>',
-          source: '模拟新闻来源',
+          title: 'Mock News Title: Government Releases New Environmental Policies',
+          content: '<p>This is mock news content. According to the latest information, the government today released a series of environmental policies aimed at reducing carbon emissions and protecting the environment.</p><p>Experts say these policies will have a positive impact on environmental improvement in the coming years.</p>',
+          source: 'Mock News Source',
           date: new Date().toISOString(),
           trustScore: 75,
           category: 'Environment',
@@ -378,7 +378,7 @@ export default {
     const handleVote = async (voteType) => {
       // 检查权限
       if (!canVote.value) {
-        voteMessage.value = '您没有权限参与投票，请登录';
+        voteMessage.value = 'You don\'t have permission to vote, please login';
         setTimeout(() => {
           voteMessage.value = '';
         }, 3000);
@@ -387,7 +387,7 @@ export default {
       
       // 如果用户已经投过票，不允许再次投票
       if (userVote.value) {
-        voteMessage.value = '您已经投过票了';
+        voteMessage.value = 'You have already voted';
         setTimeout(() => {
           voteMessage.value = '';
         }, 3000);
@@ -400,12 +400,12 @@ export default {
       try {
         const result = await newsStore.voteNews(newsId.value, voteType);
         if (result.success) {
-          voteMessage.value = '投票成功，感谢您的参与！';
+          voteMessage.value = 'Vote successful, thank you for participating!'
         } else {
-          voteMessage.value = result.error || '投票失败，请重试';
+          voteMessage.value = result.error || 'Failed to vote, please try again';
         }
       } catch (error) {
-        voteMessage.value = '投票失败，请重试';
+        voteMessage.value = 'Failed to vote, please try again';
         console.error('投票错误:', error);
       } finally {
         isVoting.value = false;
@@ -468,7 +468,7 @@ export default {
           comments.value = result;
         }
       } catch (error) {
-        console.error('加载评论失败:', error);
+        console.error('Failed to load comments:', error);
         // 失败时显示模拟数据
         comments.value = [
           {
@@ -488,7 +488,7 @@ export default {
     const submitComment = async () => {
       // 检查权限
       if (!canComment.value) {
-        commentMessage.value = '您没有权限发表评论，请登录';
+        commentMessage.value = 'You don\'t have permission to comment, please login';
         setTimeout(() => {
           commentMessage.value = '';
         }, 3000);
@@ -496,7 +496,7 @@ export default {
       }
       
       if (!commentContent.value.trim()) {
-        commentMessage.value = '评论内容不能为空';
+        commentMessage.value = 'Comment content cannot be empty';
         setTimeout(() => {
           commentMessage.value = '';
         }, 3000);
@@ -504,7 +504,7 @@ export default {
       }
       
       if (commentContent.value.length < 5) {
-        commentMessage.value = '评论内容至少需要5个字符';
+        commentMessage.value = 'Comment must be at least 5 characters long';
         setTimeout(() => {
           commentMessage.value = '';
         }, 3000);
@@ -534,7 +534,7 @@ export default {
           // 添加到评论列表开头
           comments.value.unshift(newComment);
         } catch (apiError) {
-          console.log('API提交失败，使用模拟数据');
+          console.log('API submission failed, using mock data');
           // API失败时，创建模拟评论
           const mockComment = {
             id: Date.now(),
@@ -549,10 +549,10 @@ export default {
         
         // 清空输入框
         commentContent.value = '';
-        commentMessage.value = '评论发表成功！';
+        commentMessage.value = 'Comment posted successfully!'
       } catch (error) {
-        console.error('提交评论失败:', error);
-        commentMessage.value = '评论发表失败，请重试';
+        console.error('Failed to submit comment:', error);
+        commentMessage.value = 'Failed to post comment, please try again';
       } finally {
         isSubmittingComment.value = false;
         // 3秒后清除消息
@@ -574,13 +574,13 @@ export default {
         const diffDays = Math.floor(diffHours / 24);
         
         if (diffSecs < 60) {
-          return '刚刚';
+          return 'Just now';
         } else if (diffMins < 60) {
-          return `${diffMins}分钟前`;
+          return `${diffMins} minutes ago`;
         } else if (diffHours < 24) {
-          return `${diffHours}小时前`;
+          return `${diffHours} hours ago`;
         } else if (diffDays < 30) {
-          return `${diffDays}天前`;
+          return `${diffDays} days ago`;
         } else {
           return date.toLocaleDateString('zh-CN');
         }

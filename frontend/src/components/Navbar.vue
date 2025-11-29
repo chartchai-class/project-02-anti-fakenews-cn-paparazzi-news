@@ -13,8 +13,8 @@
         <!-- Search Box -->
         <div class="search-container">
           <div class="search-box">
-            <input type="text" placeholder="搜索新闻..." class="search-input">
-            <button class="search-button">搜索</button>
+            <input type="text" placeholder="Search news..." class="search-input">
+            <button class="search-button">Search</button>
           </div>
         </div>
 
@@ -22,42 +22,42 @@
         <nav class="main-nav">
           <ul class="nav-list">
             <li class="nav-item">
-              <router-link to="/" class="nav-link" exact>首页</router-link>
+              <router-link to="/" class="nav-link" exact>Home</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/category/Politics" class="nav-link">政治</router-link>
+              <router-link to="/category/Politics" class="nav-link">Politics</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/category/Society" class="nav-link">社会</router-link>
+              <router-link to="/category/Society" class="nav-link">Society</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/category/Environment" class="nav-link">环境</router-link>
+              <router-link to="/category/Environment" class="nav-link">Environment</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/category/Education" class="nav-link">教育</router-link>
+              <router-link to="/category/Education" class="nav-link">Education</router-link>
             </li>
-            <!-- 未登录状态显示登录/注册 -->
+            <!-- Show login/register for unauthenticated users -->
             <template v-if="!isAuthenticated">
               <li class="nav-item">
-                <router-link to="/login" class="nav-link">登录</router-link>
-              </li>
-              <li class="nav-item">
-                <router-link to="/register" class="nav-link">注册</router-link>
-              </li>
+                <router-link to="/login" class="nav-link">Login</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/register" class="nav-link">Register</router-link>
+            </li>
             </template>
-            <!-- 登录状态显示用户信息 -->
+            <!-- Show user info for authenticated users -->
             <template v-else>
               <li class="nav-item user-profile" @click="toggleUserMenu">
                 <div class="user-info">
                   <img :src="user?.avatar" :alt="`${user?.firstName} ${user?.lastName}`" class="user-avatar">
                   <span class="user-name">{{ user?.firstName }} {{ user?.lastName }}</span>
                 </div>
-                <!-- 用户下拉菜单 -->
+                <!-- User dropdown menu -->
                 <div class="user-menu" v-if="userMenuOpen" @mouseleave="closeUserMenu">
-                  <router-link to="/profile" class="menu-item" @click="closeUserMenu">个人资料</router-link>
-                  <router-link to="/upload" class="menu-item" v-if="user?.role === 'MEMBER' || user?.role === 'ADMIN'" @click="closeUserMenu">上传新闻</router-link>
-                  <router-link to="/admin" class="menu-item" v-if="user?.role === 'ADMIN'" @click="closeUserMenu">管理面板</router-link>
-                  <div class="menu-item logout" @click="logout">退出登录</div>
+                  <router-link to="/profile" class="menu-item" @click="closeUserMenu">Profile</router-link>
+                  <router-link to="/upload" class="menu-item" v-if="user?.role === 'MEMBER' || user?.role === 'ADMIN'" @click="closeUserMenu">Upload News</router-link>
+                  <router-link to="/admin" class="menu-item" v-if="user?.role === 'ADMIN'" @click="closeUserMenu">Admin Panel</router-link>
+                  <div class="menu-item logout" @click="logout">Logout</div>
                 </div>
               </li>
             </template>
@@ -75,33 +75,33 @@
     <nav class="mobile-nav" :class="{ 'nav-list-open': isMenuOpen }">
       <ul class="mobile-nav-list">
         <li class="nav-item">
-          <router-link to="/" class="nav-link" exact @click="closeMenu">首页</router-link>
+          <router-link to="/" class="nav-link" exact @click="closeMenu">Home</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/category/Politics" class="nav-link" @click="closeMenu">政治</router-link>
+          <router-link to="/category/Politics" class="nav-link" @click="closeMenu">Politics</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/category/Society" class="nav-link" @click="closeMenu">社会</router-link>
+          <router-link to="/category/Society" class="nav-link" @click="closeMenu">Society</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/category/Environment" class="nav-link" @click="closeMenu">环境</router-link>
+          <router-link to="/category/Environment" class="nav-link" @click="closeMenu">Environment</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/category/Education" class="nav-link" @click="closeMenu">教育</router-link>
+          <router-link to="/category/Education" class="nav-link" @click="closeMenu">Education</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/category/Entertainment" class="nav-link" @click="closeMenu">娱乐</router-link>
+          <router-link to="/category/Entertainment" class="nav-link" @click="closeMenu">Entertainment</router-link>
         </li>
-        <!-- 移动端登录/注册链接 -->
+        <!-- Mobile login/register links -->
         <template v-if="!isAuthenticated">
           <li class="nav-item">
-            <router-link to="/login" class="nav-link" @click="closeMenu">登录</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/register" class="nav-link" @click="closeMenu">注册</router-link>
+            <router-link to="/login" class="nav-link" @click="closeMenu">Login</router-link>
+        </li>
+        <li class="nav-item">
+            <router-link to="/register" class="nav-link" @click="closeMenu">Register</router-link>
           </li>
         </template>
-        <!-- 移动端用户信息 -->
+        <!-- Mobile user info -->
         <template v-else>
           <li class="nav-item">
             <div class="user-info-mobile">
@@ -111,16 +111,16 @@
             </div>
           </li>
           <li class="nav-item">
-            <router-link to="/profile" class="nav-link" @click="closeMenu">个人资料</router-link>
+            <router-link to="/profile" class="nav-link" @click="closeMenu">Profile</router-link>
           </li>
           <li class="nav-item" v-if="user?.role === 'MEMBER' || user?.role === 'ADMIN'">
-            <router-link to="/upload" class="nav-link" @click="closeMenu">上传新闻</router-link>
+            <router-link to="/upload" class="nav-link" @click="closeMenu">Upload News</router-link>
           </li>
           <li class="nav-item" v-if="user?.role === 'ADMIN'">
-            <router-link to="/admin" class="nav-link" @click="closeMenu">管理面板</router-link>
+            <router-link to="/admin" class="nav-link" @click="closeMenu">Admin Panel</router-link>
           </li>
           <li class="nav-item">
-            <div class="nav-link logout" @click="logout">退出登录</div>
+            <div class="nav-link logout" @click="logout">Logout</div>
           </li>
         </template>
       </ul>
@@ -296,47 +296,62 @@ export default {
 
 /* Search Box Styles */
 .search-container {
-  flex: 0 1 400px;
-  margin: 0 var(--spacing-xl);
+  flex: 1;
+  max-width: 550px; /* 稍微增加最大宽度以提高视觉平衡 */
+  margin: 0 var(--spacing-lg); /* 调整边距 */
 }
 
 .search-box {
   display: flex;
   position: relative;
+  border-radius: 10px; /* 稍微增加圆角 */
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background-color: var(--white); /* 默认白色背景 */
+  transition: all var(--transition-base) ease;
+}
+
+.search-box:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 保留阴影效果 */
 }
 
 .search-input {
   flex: 1;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
+  padding: var(--spacing-md) var(--spacing-lg); /* 增加内边距提高可点击区域 */
+  border: none;
+  background-color: transparent;
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  color: var(--text-primary);
+  transition: all var(--transition-base) ease;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: var(--secondary-color);
-  box-shadow: 0 0 0 3px rgba(255, 212, 59, 0.1);
+  color: var(--text-primary);
+  background-color: transparent;
+}
+
+.search-input::placeholder {
+  color: var(--text-secondary);
 }
 
 .search-button {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   background-color: var(--primary-color);
-  color: var(--white);
+  color: white; /* 确保文字始终为白色 */
   border: none;
-  border-radius: 8px;
-  margin-left: var(--spacing-sm);
   cursor: pointer;
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  transition: background-color var(--transition-base);
+  font-weight: 500;
+  transition: opacity var(--transition-base) ease;
+  border-radius: 0 10px 10px 0;
 }
 
 .search-button:hover {
-  background-color: var(--secondary-color);
-  color: var(--primary-color);
+  opacity: 0.9;
+  color: white; /* 悬停时保持白色文字 */
 }
 
 /* Desktop Navigation Styles */
@@ -529,8 +544,13 @@ export default {
 /* Responsive Design */
 @media (max-width: 1024px) {
   .search-container {
-    flex: 0 1 300px;
+    flex: 0 1 400px; /* 增加中等屏幕下的宽度 */
     margin: 0 var(--spacing-md);
+  }
+  
+  .search-input {
+    padding: var(--spacing-sm) var(--spacing-md); /* 稍微减少内边距 */
+    font-size: 0.95rem; /* 稍微减小字体 */
   }
 }
 
@@ -540,7 +560,7 @@ export default {
   }
   
   .search-container {
-    display: none;
+    display: none; /* 在移动设备上隐藏搜索栏 */
   }
   
   .main-nav {

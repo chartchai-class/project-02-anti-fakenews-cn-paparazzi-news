@@ -1,6 +1,6 @@
 <template>
   <router-link :to="`/news/${id}`" class="news-card">
-    <!-- 新闻图片 -->
+    <!-- News Image -->
     <div class="card-image">
       <img 
         :src="currentImageUrl" 
@@ -10,25 +10,25 @@
         @load="imageLoaded = true"
         :class="{ loaded: imageLoaded }"
       />
-      <!-- 图片加载占位 -->
+      <!-- Image Loading Placeholder -->
       <div v-if="!imageLoaded" class="image-placeholder">
         <span class="placeholder-icon">📰</span>
       </div>
-      <!-- 图片上的信任度指示器 -->
+      <!-- Trust Indicator on Image -->
       <div class="image-trust-indicator" :class="trustLevelClass">
         <span class="trust-icon">{{ trustLevelIcon }}</span>
       </div>
     </div>
     
-    <!-- 卡片内容 -->
+    <!-- Card Content -->
     <div class="card-content">
-      <!-- 信任度详情 -->
+      <!-- Trust Details -->
       <div class="trust-container">
         <div class="trust-badge" :class="trustLevelClass">
-          <span class="trust-label">可信度</span>
+          <span class="trust-label">Credibility</span>
           <span class="trust-score">{{ trustScore }}%</span>
         </div>
-        <!-- 信任度进度条 -->
+        <!-- Trust Progress Bar -->
         <div class="trust-progress-container">
           <div 
             class="trust-progress-bar" 
@@ -38,13 +38,13 @@
         </div>
       </div>
       
-      <!-- 标题 -->
+      <!-- Title -->
       <h3 class="card-title">{{ title }}</h3>
       
-      <!-- 摘要 -->
+      <!-- Summary -->
       <p class="card-summary">{{ summary }}</p>
       
-      <!-- 元信息 -->
+      <!-- Meta Information -->
       <div class="card-meta">
         <div class="meta-left">
           <span class="source">{{ source }}</span>
@@ -54,9 +54,9 @@
       </div>
     </div>
     
-    <!-- 悬停效果层 -->
+    <!-- Hover Overlay -->
     <div class="card-hover-overlay">
-      <span class="read-more-text">查看详情</span>
+      <span class="read-more-text">Read More</span>
     </div>
   </router-link>
 </template>
@@ -99,7 +99,7 @@ export default {
       currentImageUrl: this.imageUrl,
       imageLoaded: false,
       fallbackImageUrl: 'https://picsum.photos/id/237/400/225',
-      // 备用图片列表，用于多次重试
+      // Fallback image list for multiple retries
       fallbackImages: [
         'https://picsum.photos/id/237/400/225',
         'https://picsum.photos/id/1005/400/225',
@@ -110,36 +110,36 @@ export default {
     };
   },
   watch: {
-    // 监听imageUrl变化，更新currentImageUrl
+    // Watch imageUrl changes, update currentImageUrl
     imageUrl(newUrl) {
       this.resetImageState();
       this.currentImageUrl = newUrl;
     }
   },
   computed: {
-    // 根据可信度分数计算可信度级别
+    // Calculate trust level based on score
     trustLevel() {
       if (this.trustScore >= 80) return 'high';
       if (this.trustScore >= 60) return 'medium';
       return 'low';
     },
     
-    // 可信度样式类
+    // Trust level CSS class
     trustLevelClass() {
       return `trust-${this.trustLevel}`;
     },
     
-    // 可信度文本
+    // Trust level text
     trustLevelText() {
       const levels = {
-        high: '高可信度',
-        medium: '中等可信度',
-        low: '低可信度'
+        high: 'High Credibility',
+        medium: 'Medium Credibility',
+        low: 'Low Credibility'
       };
       return levels[this.trustLevel] || '';
     },
     
-    // 可信度图标
+    // Trust level icon
     trustLevelIcon() {
       const icons = {
         high: '✓',
@@ -149,11 +149,11 @@ export default {
       return icons[this.trustLevel] || '?';
     },
     
-    // 格式化日期
+    // Format date
     formattedDate() {
       try {
         const date = new Date(this.date);
-        return date.toLocaleDateString('zh-CN', {
+        return date.toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'short',
           day: 'numeric'
@@ -164,25 +164,25 @@ export default {
     }
   },
   methods: {
-    // 处理图片加载错误
+    // Handle image loading error
     handleImageError() {
-      // 如果当前不是备用图片，则尝试使用备用图片
+      // If current image is not fallback, try fallback images
       if (this.currentImageUrl !== this.fallbackImageUrl) {
         this.currentFallbackIndex++;
-        // 如果还有备用图片，尝试下一个
+        // If there are more fallback images, try next one
         if (this.currentFallbackIndex < this.fallbackImages.length) {
           this.currentImageUrl = this.fallbackImages[this.currentFallbackIndex];
         } else {
-          // 所有备用图片都尝试过了，使用默认备用图
+          // All fallback images tried, use default fallback
           this.currentImageUrl = this.fallbackImageUrl;
         }
       } else {
-        // 备用图片也加载失败，标记为已加载，显示占位符
+        // Fallback image also failed, mark as loaded, show placeholder
         this.imageLoaded = true;
       }
     },
     
-    // 重置图片状态
+    // Reset image state
     resetImageState() {
       this.imageLoaded = false;
       this.currentFallbackIndex = 0;

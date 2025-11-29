@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '../stores/authStore';
 
-// 懒加载路由组件
+// Lazy loading route components
 const Home = () => import('../pages/Home.vue');
 const Category = () => import('../pages/Category.vue');
 const NewsDetail = () => import('../pages/NewsDetail.vue');
@@ -16,7 +16,7 @@ const routes = [
     name: 'Login',
     component: LoginPage,
     meta: {
-      title: '登录 - Paparazzi News',
+      title: 'Login Portal - Paparazzi News',
       requiresAuth: false
     }
   },
@@ -26,7 +26,7 @@ const routes = [
     component: Category,
     props: true,
     meta: {
-      title: '分类新闻'
+      title: 'Category News'
     }
   },
   {
@@ -35,7 +35,7 @@ const routes = [
     component: NewsDetail,
     props: true,
     meta: {
-      title: '新闻详情'
+      title: 'News Detail'
     }
   },
   {
@@ -43,7 +43,7 @@ const routes = [
     name: 'Home',
     component: Home,
     meta: {
-      title: 'Paparazzi News - 新闻首页'
+      title: 'Paparazzi News - Home'
     }
   },
   {
@@ -60,7 +60,7 @@ const routes = [
     name: 'Admin',
     component: AdminPage,
     meta: {
-      title: '管理员控制面板 - Paparazzi News',
+      title: 'Admin Control Panel - Paparazzi News',
       requiresAuth: true,
       requiresAdmin: true
     }
@@ -70,12 +70,12 @@ const routes = [
     name: 'NewsUpload',
     component: NewsUploadPage,
     meta: {
-      title: '上传新闻 - Paparazzi News',
+      title: 'Upload News - Paparazzi News',
       requiresAuth: true,
       requiresMember: true
     }
   },
-  // 404路由，重定向到首页
+  // 404 route, redirect to home
   {
     path: '/:pathMatch(.*)*',
     redirect: '/'
@@ -84,46 +84,46 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  // 配置滚动行为
+  // Configure scroll behavior
   scrollBehavior(to, from, savedPosition) {
-    // 如果有保存的位置，则恢复到该位置
+    // If there is a saved position, restore to that position
     if (savedPosition) {
       return savedPosition;
     }
-    // 否则滚动到顶部
+    // Otherwise scroll to top
     return { top: 0 };
   }
 });
 
-// 全局前置守卫，用于更新页面标题和权限检查
+// Global before guard for updating page title and permission checking
 router.beforeEach((to, from, next) => {
-  // 更新页面标题
+  // Update page title
   document.title = to.meta.title || 'Paparazzi News';
   
-  // 权限检查
+  // Permission checking
   const authStore = useAuthStore();
   
-  // 如果路由需要认证
+  // If route requires authentication
   if (to.meta.requiresAuth === true) {
     if (!authStore.isAuthenticated) {
-      // 未登录，重定向到登录页
+      // Not logged in, redirect to login page
       return next({ name: 'Login', query: { redirect: to.fullPath } });
     }
     
-    // 如果路由需要管理员权限
+    // If route requires admin permission
     if (to.meta.requiresAdmin === true && !authStore.isAdmin) {
-      // 不是管理员，重定向到首页
+      // Not an admin, redirect to home page
       return next({ name: 'Home' });
     }
     
-    // 如果路由需要成员权限
+    // If route requires member permission
     if (to.meta.requiresMember === true && !authStore.isMember) {
-      // 不是成员，重定向到首页
+      // Not a member, redirect to home page
       return next({ name: 'Home' });
     }
   }
   
-  // 如果已登录用户尝试访问登录或注册页面，重定向到首页
+  // If a logged-in user tries to access login or register page, redirect to home page for all roles
   if ((to.name === 'Login' || to.name === 'Register') && authStore.isAuthenticated) {
     return next({ name: 'Home' });
   }

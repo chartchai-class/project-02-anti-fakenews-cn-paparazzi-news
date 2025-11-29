@@ -1,14 +1,14 @@
 <template>
   <div class="register-container">
     <div class="register-form">
-      <h2>用户注册</h2>
+      <h2>User Registration</h2>
       <form @submit.prevent="handleSubmit">
-        <!-- 头像上传 -->
+        <!-- Avatar Upload -->
         <div class="form-group avatar-upload">
-          <label>个人头像</label>
+          <label>Profile Avatar</label>
           <div class="avatar-preview" :class="{ 'has-avatar': avatarPreview }" @click="triggerFileInput">
-            <img v-if="avatarPreview" :src="avatarPreview" alt="头像预览" class="preview-img" />
-            <div v-else class="placeholder">点击上传头像</div>
+            <img v-if="avatarPreview" :src="avatarPreview" alt="Avatar Preview" class="preview-img" />
+            <div v-else class="placeholder">Click to upload avatar</div>
             <input
               ref="fileInput"
               type="file"
@@ -17,88 +17,88 @@
               style="display: none"
             />
           </div>
-          <p class="avatar-hint">点击头像区域上传，支持JPG、PNG格式</p>
+          <p class="avatar-hint">Click the avatar area to upload, supporting JPG, PNG formats</p>
         </div>
 
         <div class="form-row">
-          <!-- 姓 -->
+          <!-- Last Name -->
           <div class="form-group half">
-            <label for="lastName">姓氏</label>
+            <label for="lastName">Last Name</label>
             <input
               id="lastName"
               v-model="formData.lastName"
               type="text"
-              placeholder="输入您的姓氏"
+              placeholder="Enter your last name"
               required
             />
           </div>
           
-          <!-- 名 -->
+          <!-- First Name -->
           <div class="form-group half">
-            <label for="firstName">姓名</label>
+            <label for="firstName">First Name</label>
             <input
               id="firstName"
               v-model="formData.firstName"
               type="text"
-              placeholder="输入您的姓名"
+              placeholder="Enter your first name"
               required
             />
           </div>
         </div>
 
         <div class="form-group">
-          <label for="username">用户名</label>
+          <label for="username">Username</label>
           <input
             id="username"
             v-model="formData.username"
             type="text"
-            placeholder="设置您的用户名"
+            placeholder="Set your username"
             required
           />
         </div>
 
         <div class="form-group">
-          <label for="email">电子邮箱</label>
+          <label for="email">Email Address</label>
           <input
             id="email"
             v-model="formData.email"
             type="email"
-            placeholder="输入您的电子邮箱"
+            placeholder="Enter your email address"
             required
           />
         </div>
 
         <div class="form-group">
-          <label for="password">密码</label>
+          <label for="password">Password</label>
           <input
             id="password"
             v-model="formData.password"
             type="password"
-            placeholder="设置您的密码"
+            placeholder="Set your password"
             required
           />
         </div>
 
         <div class="form-group">
-          <label for="confirmPassword">确认密码</label>
+          <label for="confirmPassword">Confirm Password</label>
           <input
             id="confirmPassword"
             v-model="formData.confirmPassword"
             type="password"
-            placeholder="再次输入密码"
+            placeholder="Enter password again"
             required
           />
         </div>
         
-        <!-- 错误消息 -->
+        <!-- Error Message -->
         <span v-if="error" class="error-message">{{ error }}</span>
 
         <button type="submit" :disabled="loading" class="register-button">
-          {{ loading ? '注册中...' : '注册' }}
+          {{ loading ? 'Registering...' : 'Register' }}
         </button>
 
         <div class="login-link">
-          已有账号？<router-link to="/login">登录</router-link>
+          Already have an account? <router-link to="/login">Login</router-link>
         </div>
       </form>
     </div>
@@ -116,7 +116,7 @@ export default {
     const router = useRouter()
     const authStore = useAuthStore()
     
-    // 表单数据
+    // Form data
     const formData = ref({
       username: '',
       firstName: '',
@@ -126,28 +126,28 @@ export default {
       confirmPassword: ''
     })
     
-    // 头像相关
+    // Avatar related
     const avatarPreview = ref('')
     const avatarFile = ref(null)
     const fileInput = ref(null)
     
-    // 状态
+    // Status
     const loading = ref(false)
     const error = ref('')
     
-    // 头像上传处理
+    // Handle avatar upload
     const handleAvatarUpload = (event) => {
       const file = event.target.files[0]
       if (file) {
-        // 检查文件类型
+        // Check file type
         if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
-          error.value = '请上传JPG或PNG格式的图片'
+          error.value = 'Please upload JPG or PNG format images'
           return
         }
         
-        // 检查文件大小 (5MB限制)
+        // Check file size (5MB limit)
         if (file.size > 5 * 1024 * 1024) {
-          error.value = '图片大小不能超过5MB'
+          error.value = 'Image size cannot exceed 5MB'
           return
         }
         
@@ -164,58 +164,58 @@ export default {
       }
     }
     
-    // 点击头像区域触发文件选择
+    // Click avatar area to trigger file selection
     const triggerFileInput = () => {
       fileInput.value.click()
     }
     
-    // 表单验证
+    // Form validation
     const validateForm = () => {
-      // 重置错误消息
+      // Reset error message
       error.value = ''
       
-      // 验证姓名和姓氏
+      // Validate first and last name
       if (!formData.value.firstName.trim()) {
-        error.value = '请输入您的姓名'
+        error.value = 'Please enter your first name'
         return false
       }
       
       if (!formData.value.lastName.trim()) {
-        error.value = '请输入您的姓氏'
+        error.value = 'Please enter your last name'
         return false
       }
       
-      // 验证用户名
+      // Validate username
       if (!formData.value.username.trim() || formData.value.username.length < 3) {
-        error.value = '用户名至少需要3个字符'
+        error.value = 'Username must be at least 3 characters'
         return false
       }
       
-      // 验证邮箱
+      // Validate email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (!emailRegex.test(formData.value.email)) {
-        error.value = '请输入有效的电子邮箱地址'
+        error.value = 'Please enter a valid email address'
         return false
       }
       
-      // 验证密码
+      // Validate password
       if (formData.value.password.length < 6) {
-        error.value = '密码至少需要6个字符'
+        error.value = 'Password must be at least 6 characters'
         return false
       }
       
-      // 验证密码匹配
+      // Validate password match
       if (formData.value.password !== formData.value.confirmPassword) {
-        error.value = '两次输入的密码不匹配'
+        error.value = 'The passwords you entered do not match'
         return false
       }
       
       return true
     }
     
-    // 处理表单提交
+    // Handle form submission
     const handleSubmit = async () => {
-      // 验证表单
+      // Validate form
       if (!validateForm()) {
         return
       }
@@ -235,14 +235,14 @@ export default {
         const success = await authStore.register(userData)
         
         if (success) {
-          // 注册成功，跳转到首页
+          // Registration successful, redirect to home page
           router.push('/')
         } else {
-          // 显示认证存储中的错误
-          error.value = authStore.getError || '注册失败，请稍后再试'
+          // Show error from auth store
+          error.value = authStore.getError || 'Registration failed, please try again later'
         }
       } catch (err) {
-        error.value = '注册过程中发生错误'
+        error.value = 'An error occurred during registration'
         console.error('Registration error:', err)
       } finally {
         loading.value = false

@@ -1,19 +1,19 @@
 <template>
   <footer class="footer">
     <div class="footer-container">
-      <!-- 左侧：项目信息 -->
+      <!-- Left: Project Information -->
       <div class="footer-info">
         <h2 class="footer-title">Paparazzi News</h2>
-        <p class="footer-subtitle">反假新闻识别平台</p>
+        <p class="footer-subtitle">Anti-Fake News Recognition Platform</p>
         <p class="footer-description">
-          通过可信度评分帮助用户识别真实与虚假新闻，共建清朗网络环境
+          Helping users identify real and fake news through credibility ratings, building a clean online environment
         </p>
       </div>
       
-      <!-- 中间：团队信息 -->
+      <!-- Middle: Team Information -->
       <div class="footer-team">
-        <h3>开发团队</h3>
-        <p class="team-members">三人小组</p>
+        <h3>Development Team</h3>
+        <p class="team-members">Three-Person Team</p>
         <div class="team-social">
           <a 
             href="https://github.com" 
@@ -29,11 +29,11 @@
         </div>
       </div>
       
-      <!-- 右侧：导航链接 -->
+      <!-- Right: Navigation Links -->
       <div class="footer-nav">
-        <h3>快速导航</h3>
+        <h3>Quick Navigation</h3>
         <ul class="nav-links">
-          <li><router-link to="/" class="nav-link">首页</router-link></li>
+          <li><router-link to="/" class="nav-link">Home</router-link></li>
           <li><router-link to="/category/Politics" class="nav-link">政治</router-link></li>
           <li><router-link to="/category/Society" class="nav-link">社会</router-link></li>
           <li><router-link to="/category/Environment" class="nav-link">环境</router-link></li>
@@ -43,17 +43,17 @@
       </div>
     </div>
     
-    <!-- 底部版权信息 -->
+    <!-- Bottom: Copyright Information -->
     <div class="footer-bottom">
       <div class="footer-copyright">
-        <p>&copy; {{ currentYear }} Paparazzi News. 保留所有权利。</p>
+        <p>&copy; {{ currentYear }} Paparazzi News. All rights reserved.</p>
       </div>
       <div class="footer-terms">
-        <a href="#" class="terms-link">隐私政策</a>
+        <a href="#" class="terms-link">Privacy Policy</a>
         <span>|</span>
-        <a href="#" class="terms-link">使用条款</a>
+        <a href="#" class="terms-link">Terms of Service</a>
         <span>|</span>
-        <a href="#" class="terms-link">关于我们</a>
+        <a href="#" class="terms-link">About Us</a>
       </div>
     </div>
   </footer>
@@ -67,7 +67,7 @@ export default {
   setup() {
     const currentYear = ref(new Date().getFullYear());
     
-    // 处理滚动效果
+    // Handle scroll effect
     const handleScroll = () => {
       const footer = document.querySelector('.footer');
       if (footer) {
@@ -75,7 +75,7 @@ export default {
         const windowHeight = window.innerHeight;
         const documentHeight = document.documentElement.scrollHeight;
         
-        // 当滚动到页面底部附近时，添加动画效果
+        // Add animation effect when scrolling near the bottom of the page
         if (scrollPosition + windowHeight >= documentHeight - 200) {
           footer.classList.add('footer-visible');
         } else {
@@ -86,7 +86,7 @@ export default {
     
     onMounted(() => {
       window.addEventListener('scroll', handleScroll);
-      // 初始化时检查一次
+      // Check once on initialization
       handleScroll();
     });
     

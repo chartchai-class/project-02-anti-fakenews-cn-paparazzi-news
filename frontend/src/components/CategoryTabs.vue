@@ -17,12 +17,12 @@
       </div>
     </div>
     
-    <!-- 左右滑动指示器 -->
+    <!-- Left/Right Scroll Indicators -->
     <div 
       class="scroll-indicator left" 
       :class="{ visible: canScrollLeft }"
       @click="scrollLeft"
-      aria-label="滚动到左侧"
+      aria-label="Scroll to the left"
     >
       <span>&lt;</span>
     </div>
@@ -30,7 +30,7 @@
       class="scroll-indicator right" 
       :class="{ visible: canScrollRight }"
       @click="scrollRight"
-      aria-label="滚动到右侧"
+      aria-label="Scroll to the right"
     >
       <span>&gt;</span>
     </div>
@@ -44,7 +44,7 @@ import { useRoute, useRouter } from 'vue-router';
 export default {
   name: 'CategoryTabs',
   props: {
-    // 可选的新闻统计数据
+    // Optional news count data
     newsCounts: {
       type: Object,
       default: () => ({})
@@ -57,30 +57,30 @@ export default {
     const canScrollLeft = ref(false);
     const canScrollRight = ref(false);
     
-    // 分类列表
+    // Category list
     const categories = computed(() => {
       return ['All', 'Politics', 'Society', 'Environment', 'Education', 'Entertainment'];
     });
     
-    // 获取分类的中文标签
+    // Get category labels
     const getCategoryLabel = (category) => {
       const labels = {
-        'All': '全部',
-        'Politics': '政治',
-        'Society': '社会',
-        'Environment': '环境',
-        'Education': '教育',
-        'Entertainment': '娱乐'
+        'All': 'All',
+        'Politics': 'Politics',
+        'Society': 'Society',
+        'Environment': 'Environment',
+        'Education': 'Education',
+        'Entertainment': 'Entertainment'
       };
       return labels[category] || category;
     };
     
-    // 获取新闻数量
+    // Get news count
     const getNewsCount = (category) => {
       return props.newsCounts[category] || 0;
     };
     
-    // 判断当前分类是否激活
+    // Check if category is active
     const isActiveCategory = (category) => {
       if (category === 'All') {
         return route.path === '/';
@@ -88,7 +88,7 @@ export default {
       return route.path === `/category/${category}`;
     };
     
-    // 处理标签点击
+    // Handle tab click
     const handleTabClick = (category) => {
       const routePath = category === 'All' ? '/' : `/category/${category}`;
       if (route.path !== routePath) {
@@ -96,7 +96,7 @@ export default {
       }
     };
     
-    // 检查滚动状态
+    // Check scroll status
     const checkScrollStatus = () => {
       if (!tabsWrapper.value) return;
       
@@ -105,7 +105,7 @@ export default {
       canScrollRight.value = scrollLeft + clientWidth < scrollWidth - 10;
     };
     
-    // 向左滚动
+    // Scroll left
     const scrollLeft = () => {
       if (!tabsWrapper.value) return;
       tabsWrapper.value.scrollBy({
@@ -114,7 +114,7 @@ export default {
       });
     };
     
-    // 向右滚动
+    // Scroll right
     const scrollRight = () => {
       if (!tabsWrapper.value) return;
       tabsWrapper.value.scrollBy({
@@ -123,7 +123,7 @@ export default {
       });
     };
     
-    // 监听路由变化，滚动到活动标签
+    // Watch route changes, scroll to active tab
     watch(() => route.path, () => {
       setTimeout(() => {
         if (!tabsWrapper.value) return;
@@ -142,14 +142,14 @@ export default {
       }, 100);
     });
     
-    // 生命周期
+    // Lifecycle hooks
     onMounted(() => {
       if (tabsWrapper.value) {
         tabsWrapper.value.addEventListener('scroll', checkScrollStatus);
         window.addEventListener('resize', checkScrollStatus);
         checkScrollStatus();
         
-        // 初始化时滚动到活动标签
+        // Scroll to active tab on initialization
         const activeTab = tabsWrapper.value.querySelector('.tab-button.active');
         if (activeTab) {
           activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });

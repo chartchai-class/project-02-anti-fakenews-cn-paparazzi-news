@@ -8,7 +8,7 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: false,
     loading: false,
     error: null,
-    // 用户角色常量定义
+    // User role constant definitions
     ROLES: {
       ADMIN: 'ADMIN',
       MEMBER: 'MEMBER',
@@ -17,16 +17,16 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
-    getUser: (state) => state.user,
-    isLoading: (state) => state.loading,
-    getError: (state) => state.error,
-    // 角色相关的getters
-    isAdmin: (state) => state.isAuthenticated && state.user?.role === state.ROLES.ADMIN,
-    isMember: (state) => state.isAuthenticated && (state.user?.role === state.ROLES.MEMBER || state.user?.role === state.ROLES.ADMIN),
-    hasVotingPermission: (state) => state.isMember,
-    hasCommentPermission: (state) => state.isMember,
-    hasSubmissionPermission: (state) => state.isMember
-  },
+      getUser: (state) => state.user,
+      isLoading: (state) => state.loading,
+      getError: (state) => state.error,
+      // 角色相关的getters - case-insensitive comparison
+      isAdmin: (state) => state.isAuthenticated && state.user?.role?.toUpperCase() === state.ROLES.ADMIN,
+      isMember: (state) => state.isAuthenticated && (state.user?.role?.toUpperCase() === state.ROLES.MEMBER || state.user?.role?.toUpperCase() === state.ROLES.ADMIN),
+      hasVotingPermission: (state) => state.isAuthenticated, // 普通用户也能投票
+      hasCommentPermission: (state) => state.isMember, // 只有成员和管理员能评论
+      hasSubmissionPermission: (state) => state.isMember // 只有成员和管理员能提交新闻
+    },
 
   actions: {
     // 从localStorage初始化认证状态
@@ -70,14 +70,44 @@ export const useAuthStore = defineStore('auth', {
         if (success) {
           // 登录成功后初始化状态
           this.init()
+          
+          // 记录admin用户登录日志
+          if (this.isAdmin) {
+            const loginLog = {
+              username: username,
+              role: this.user.role,
+              timestamp: new Date().toISOString(),
+              ip: this.getClientIP(),
+              userAgent: navigator.userAgent
+            }
+            console.log('Admin Login Log:', loginLog)
+            // 在实际应用中，这里可以将日志发送到后端或日志服务
+          }
+          
           return true
         } else {
-          this.error = '登录失败，请检查您的用户名和密码'
+          this.error = 'Login failed, please check your username and password'
           return false
         }
       } catch (error) {
         console.error('Login error:', error)
-        this.error = error.message || '登录过程中发生错误'
+        
+        // 开发环境下，如果是管理员账号，可以直接模拟登录成功
+        if (import.meta.env.DEV && username === 'admin') {
+          console.log('Using mock admin login for development')
+          const mockAdminUser = {
+            id: 999,
+            username: 'admin',
+            email: 'admin@example.com',
+            role: 'admin'
+          }
+          localStorage.setItem('token', 'mock-admin-jwt-token')
+          localStorage.setItem('user', JSON.stringify(mockAdminUser))
+          this.init()
+          return true
+        }
+        
+        this.error = error.message || 'An error occurred during login'
         return false
       } finally {
         this.loading = false
@@ -208,6 +238,13 @@ export const useAuthStore = defineStore('auth', {
       } finally {
         this.loading = false
       }
+    },
+    
+    // 获取客户端IP地址（模拟实现，实际应用中应从后端获取）
+    getClientIP() {
+      // 在浏览器环境中，无法直接获取客户端真实IP，这里返回模拟值
+      // 实际应用中，应该在登录成功后从后端获取真实IP
+      return '127.0.0.1'
     }
   }
 })

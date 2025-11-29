@@ -17,12 +17,34 @@ const request = async (url, options = {}, retryCount = 0) => {
         token: 'mock-jwt-token'
       };
     } else if (url.includes('/auth/login')) {
+      // 解析请求体获取登录信息
+      let username = 'testuser';
+      if (options.body) {
+        const body = JSON.parse(options.body);
+        username = body.username || body.email || 'testuser';
+      }
+      
+      // 管理员账号判断
+      if (username === 'admin') {
+        return {
+          success: true,
+          user: {
+            id: 999,
+            username: 'admin',
+            email: 'admin@example.com',
+            role: 'admin'
+          },
+          token: 'mock-admin-jwt-token'
+        };
+      }
+      
+      // 普通用户
       return {
         success: true,
         user: {
           id: 1,
-          username: 'testuser',
-          email: 'test@example.com',
+          username: username,
+          email: username.includes('@') ? username : 'test@example.com',
           role: 'user'
         },
         token: 'mock-jwt-token'
@@ -138,8 +160,8 @@ const api = {
           user: {
             id: Date.now(),
             username: data.username || 'testuser',
-            firstName: data.firstName || '新',
-            lastName: data.lastName || '用户',
+            firstName: data.firstName || 'New',
+          lastName: data.lastName || 'User',
             email: data.email || 'test@example.com',
             role: isFirstAdmin ? 'ADMIN' : 'USER',
             avatar: data.avatar || `https://picsum.photos/id/${Math.floor(Math.random() * 1000)}/100/100`
@@ -163,21 +185,21 @@ const api = {
         
         // 根据用户名或邮箱区分角色
         let role = 'USER';
-        let firstName = '用户';
+        let firstName = 'User';
         let lastName = data.username || 'user';
         let avatarId = Math.floor(Math.random() * 1000);
         
         // 管理员账号
         if (data.username === 'admin' || data.email === 'admin@example.com') {
           role = 'ADMIN';
-          firstName = '管理员';
-          lastName = '系统';
+          firstName = 'Admin';
+          lastName = 'System';
           avatarId = 1;
         }
         // 成员账号
         else if (data.username === 'member' || (data.email && data.email.includes('member'))) {
           role = 'MEMBER';
-          firstName = '成员';
+          firstName = 'Member';
           avatarId = 2;
         }
         

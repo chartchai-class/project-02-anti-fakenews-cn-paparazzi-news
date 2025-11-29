@@ -22,6 +22,20 @@ export const useNewsStore = defineStore('news', {
     // 获取所有分类列表
     categoryList: (state) => {
       return ['All', ...state.categories];
+    },
+    
+    // 获取每个分类的新闻数量
+    newsCounts: (state) => {
+      const counts = {
+        'All': state.newsList.length
+      };
+      
+      // 统计每个分类的新闻数量
+      state.categories.forEach(category => {
+        counts[category] = state.newsList.filter(news => news.category === category).length;
+      });
+      
+      return counts;
     }
   },
 
@@ -36,7 +50,7 @@ export const useNewsStore = defineStore('news', {
         this.newsList = news;
         return news;
       } catch (error) {
-        this.error = error.message || '获取新闻失败';
+        this.error = error.message || 'Failed to fetch news';
         console.error('Failed to fetch news:', error);
         return [];
       } finally {
@@ -67,7 +81,7 @@ export const useNewsStore = defineStore('news', {
         }
         return news;
       } catch (error) {
-        this.error = error.message || '获取新闻详情失败';
+        this.error = error.message || 'Failed to fetch news details';
         console.error(`Failed to fetch news with id ${numericId}:`, error);
         throw error;
       } finally {
@@ -109,7 +123,7 @@ export const useNewsStore = defineStore('news', {
         });
         return news;
       } catch (error) {
-        this.error = error.message || '获取分类新闻失败';
+        this.error = error.message || 'Failed to fetch category news';
         console.error(`Failed to fetch news for category ${category}:`, error);
         return [];
       } finally {
@@ -129,7 +143,7 @@ export const useNewsStore = defineStore('news', {
         this.votes[newsId] = votes;
         return votes;
       } catch (error) {
-        console.error(`获取新闻 ${newsId} 的投票统计失败:`, error);
+        console.error(`Failed to fetch vote statistics for news ${newsId}:`, error);
         return { true: 0, false: 0, neutral: 0 };
       }
     },
@@ -147,8 +161,8 @@ export const useNewsStore = defineStore('news', {
         this.votes[newsId][voteType]++;
         return { success: true };
       } catch (error) {
-        console.error(`对新闻 ${newsId} 投票失败:`, error);
-        this.error = '投票失败，请重试';
+        console.error(`Failed to vote for news ${newsId}:`, error);
+        this.error = 'Failed to vote, please try again';
         return { success: false, error: error.message };
       }
     },

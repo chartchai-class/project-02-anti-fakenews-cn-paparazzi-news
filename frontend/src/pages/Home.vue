@@ -1,79 +1,91 @@
 <template>
   <div class="home-page">
-    <!-- 英雄区域 -->
+    <!-- Welcome Message -->
+    <section class="welcome-section">
+      <div class="welcome-container">
+        <h2 class="welcome-title">
+          Welcome, {{ getUserRoleLabel(currentUser?.role) }}!
+        </h2>
+        <p class="welcome-text">
+          Explore the latest news and stay informed with reliable information.
+        </p>
+      </div>
+    </section>
+    
+    <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-container">
-        <h1 class="hero-title">真相时刻 · Truth Moment</h1>
+        <h1 class="hero-title">Truth Moment</h1>
         <p class="hero-description">
-          我们致力于为您提供真实可靠的新闻资讯，通过先进的算法和专业团队的审核，
-          帮助您识别虚假信息，获取有价值的新闻内容。
-        </p>
+          We are committed to providing you with real and reliable news information through advanced algorithms and professional team reviews,
+          helping you identify false information and obtain valuable news content.
+        </p>,
         <div class="hero-actions">
           <router-link to="/news/latest" class="btn btn-primary">
-            浏览最新新闻
+            Browse Latest News
           </router-link>
           <router-link to="/about" class="btn btn-secondary">
-            了解我们的服务
+            Learn About Our Service
           </router-link>
         </div>
       </div>
     </section>
 
-    <!-- 核心特性 -->
+    <!-- Core Features -->
     <section class="features-section">
       <div class="section-header">
-        <h2 class="section-title">我们的核心优势</h2>
+        <h2 class="section-title">Our Core Advantages</h2>
       </div>
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon">🔍</div>
-          <h3 class="feature-title">事实核查</h3>
+          <h3 class="feature-title">Fact Checking</h3>
           <p class="feature-description">
-            多维度验证新闻真实性，通过AI技术和人工审核相结合的方式，提供可靠的信任度评分。
+            Multi-dimensional verification of news authenticity, providing reliable credibility scores through a combination of AI technology and human review.
           </p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">⚡</div>
-          <h3 class="feature-title">实时更新</h3>
+          <h3 class="feature-title">Real-time Updates</h3>
           <p class="feature-description">
-            24小时不间断监控全球新闻动态，确保您第一时间获取最新、最准确的资讯。
+            24/7 monitoring of global news dynamics to ensure you get the latest and most accurate information first.
           </p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">📊</div>
-          <h3 class="feature-title">数据可视化</h3>
+          <h3 class="feature-title">Data Visualization</h3>
           <p class="feature-description">
-            直观展示新闻可信度指标，通过图表和评分系统，让您轻松判断信息的可靠性。
+            Intuitively display news credibility indicators through charts and rating systems, allowing you to easily judge information reliability.
           </p>
         </div>
       </div>
     </section>
     
-    <!-- 分类标签栏 -->
-    <CategoryTabs />
+    <!-- Category Tabs -->
+    <CategoryTabs :newsCounts="newsCounts" />
     
-    <!-- 加载状态 -->
+    <!-- Loading State -->
     <div v-if="isLoading" class="loading-container">
       <div class="loading-spinner"></div>
-      <p>正在加载新闻...</p>
+      <p>Loading news...</p>
     </div>
     
-    <!-- 错误状态 -->
+    <!-- Error State -->
     <div v-else-if="error" class="error-container">
       <div class="error-icon">⚠️</div>
-      <h3>加载失败</h3>
+      <h3>Failed to Load</h3>
       <p>{{ error }}</p>
-      <button class="btn btn-secondary" @click="fetchNews">重试</button>
+      <button class="btn btn-secondary" @click="fetchNews">Retry</button>
     </div>
     
-    <!-- 内容区域 -->
+    <!-- Content Area -->
     <div v-else>
-      <!-- 精选新闻区 -->
+      <!-- Featured News Section -->
       <section v-if="featuredNews.length > 0" class="featured-section">
         <div class="section-header">
-          <h2 class="section-title">精选新闻</h2>
+          <h2 class="section-title">Featured News</h2>
           <router-link to="/featured" class="section-action">
-            查看全部
+            View All
             <span>→</span>
           </router-link>
         </div>
@@ -82,12 +94,12 @@
             <router-link :to="`/news/${news.id}`" class="featured-link">
               <div class="featured-image-wrapper">
                 <img :src="news.imageUrl || 'https://picsum.photos/id/'+(news.id%100)+'/800/450'" :alt="news.title" class="featured-image" />
-                <!-- 信任度指示器 -->
+                <!-- Trust Indicator -->
                 <div class="trust-indicator" :class="getTrustLevelClass(news.trustScore)">
                   <div class="trust-icon">{{ getTrustLevelIcon(news.trustScore) }}</div>
                   <div class="trust-text">{{ news.trustScore }}%</div>
                 </div>
-                <!-- 信任度进度条 -->
+                <!-- Trust Progress Bar -->
                 <div class="trust-progress-bar-container">
                   <div 
                     class="trust-progress-bar" 
@@ -98,7 +110,7 @@
               </div>
               <div class="featured-content">
                 <div class="trust-badge" :class="getTrustLevelClass(news.trustScore)">
-                  <span class="trust-label">可信度</span>
+                  <span class="trust-label">Credibility</span>
                   <span class="trust-score">{{ news.trustScore }}%</span>
                 </div>
                 <h3 class="featured-title">{{ news.title }}</h3>
@@ -113,18 +125,18 @@
         </div>
       </section>
       
-      <!-- 新闻列表 -->
+      <!-- News List -->
       <section class="news-section">
         <div class="section-header">
-          <h2 class="section-title">最新新闻</h2>
+          <h2 class="section-title">Latest News</h2>
           <router-link to="/news" class="section-action">
-            查看全部
+            View All
             <span>→</span>
           </router-link>
         </div>
         <div v-if="newsList.length === 0" class="empty-state">
           <div class="empty-icon">📰</div>
-          <p>暂无新闻内容</p>
+          <p>No news content available</p>
         </div>
         <div v-else class="news-grid">
           <NewsCard 
@@ -147,8 +159,10 @@
 <script>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-// 导入真实的store
+// Import real store
 import { useNewsStore } from '../store/newsStore';
+import { useAuthStore } from '../stores/authStore';
+import { storeToRefs } from 'pinia';
 import NewsCard from '../components/NewsCard.vue';
 import CategoryTabs from '../components/CategoryTabs.vue';
 
@@ -161,52 +175,93 @@ export default {
   setup() {
     const router = useRouter();
     const newsStore = useNewsStore();
+    const authStore = useAuthStore();
+    const { getUser: currentUser } = storeToRefs(authStore);
     
-    // 从store获取数据
+    // Get data from store
     const isLoading = computed(() => newsStore.isLoading);
     const error = computed(() => newsStore.error);
+    const newsCounts = computed(() => newsStore.newsCounts);
     
-    // 计算属性：获取所有新闻
-    const newsList = computed(() => newsStore.newsList);
+    // Mock news data for demonstration
+    const mockNews = [
+      {
+        id: 1,
+        title: 'Global Climate Change Summit Reaches New Agreement',
+        summary: 'Participating countries commit to carbon neutrality by 2050 to jointly address the global climate crisis.',
+        trustScore: 92,
+        imageUrl: 'https://picsum.photos/id/1/400/225',
+        date: new Date().toISOString(),
+        source: 'Environmental News',
+        category: 'Environment'
+      },
+      {
+        id: 2,
+        title: 'Latest Research Shows Regular Exercise Can Extend Lifespan',
+        summary: 'Scientists found that 150 minutes of moderate-intensity exercise per week can significantly reduce mortality rates.',
+        trustScore: 85,
+        imageUrl: 'https://picsum.photos/id/20/400/225',
+        date: new Date().toISOString(),
+        source: 'Health Science Journal',
+        category: 'Health'
+      },
+      {
+        id: 3,
+        title: 'New Electric Vehicle Charging Technology Released',
+        summary: 'Charging time reduced by 80%, addressing electric vehicle range anxiety.',
+        trustScore: 78,
+        imageUrl: 'https://picsum.photos/id/3/400/225',
+        date: new Date().toISOString(),
+        source: 'Tech Innovation Weekly',
+        category: 'Technology'
+      }
+    ];
     
-    // 计算属性：获取可信度最高的前3条新闻作为精选
+    // Computed property: Get all news (using mock data for demonstration)
+    const newsList = computed(() => {
+      // If store has data, use it; otherwise use mock data for demonstration
+      return newsStore.newsList.length > 0 ? newsStore.newsList : mockNews;
+    });
+    
+    // Computed property: Get top 3 news with highest credibility as featured
     const featuredNews = computed(() => {
-      return [...newsStore.newsList]
+      const newsData = newsStore.newsList.length > 0 ? newsStore.newsList : mockNews;
+      return [...newsData]
         .sort((a, b) => b.trustScore - a.trustScore)
         .slice(0, 3);
     });
     
-    // 获取新闻数据
+    // Get news data
     const fetchNews = async () => {
       await newsStore.fetchNews();
     };
     
-    // 根据可信度分数获取样式类
+    // Get CSS class based on trust score
     const getTrustLevelClass = (trustScore) => {
       if (trustScore >= 80) return 'trust-high';
       if (trustScore >= 60) return 'trust-medium';
       return 'trust-low';
     };
     
-    // 根据可信度分数获取文本
+    // Get text based on trust score
     const getTrustLevelText = (trustScore) => {
-      if (trustScore >= 80) return '高可信度';
-      if (trustScore >= 60) return '中等可信度';
-      return '低可信度';
+      if (trustScore >= 80) return 'High Credibility';
+      if (trustScore >= 60) return 'Medium Credibility';
+      return 'Low Credibility';
     };
     
-    // 根据可信度分数获取图标
+    // Get icon based on trust score
     const getTrustLevelIcon = (trustScore) => {
       if (trustScore >= 80) return '✓';
       if (trustScore >= 60) return '!';
       return '×';
     };
     
-    // 格式化日期
+    // Format date
     const formatDate = (dateString) => {
       try {
         const date = new Date(dateString);
-        return date.toLocaleDateString('zh-CN', {
+        return date.toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
           day: 'numeric'
@@ -216,7 +271,17 @@ export default {
       }
     };
     
-    // 页面加载时获取新闻数据
+    // Get user role label
+    const getUserRoleLabel = (role) => {
+      const roleMap = {
+        'ADMIN': 'Admin',
+        'MEMBER': 'Member',
+        'USER': 'User'
+      };
+      return roleMap[role] || 'Guest';
+    };
+    
+    // Get news data when page loads
     onMounted(() => {
       fetchNews();
     });
@@ -230,7 +295,10 @@ export default {
       getTrustLevelClass,
       getTrustLevelText,
       getTrustLevelIcon,
-      formatDate
+      formatDate,
+      currentUser,
+      getUserRoleLabel,
+      newsCounts
     };
   }
 };
@@ -241,12 +309,42 @@ export default {
   width: 100%;
 }
 
-/* 核心特性区域 */
+/* Welcome Section */
+.welcome-section {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  padding: var(--spacing-lg) 0;
+  margin-bottom: var(--spacing-xl);
+}
+
+.welcome-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.welcome-title {
+  font-size: var(--font-xl);
+  font-weight: var(--font-bold);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.welcome-text {
+  font-size: var(--font-base);
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Core Features Section */
 .features-section {
   margin-bottom: var(--spacing-2xl);
 }
 
-/* 加载状态 */
+/* Loading State */
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -281,7 +379,7 @@ export default {
   100% { transform: rotate(360deg); }
 }
 
-/* 错误状态 */
+/* Error State */
 .error-container {
   display: flex;
   flex-direction: column;
@@ -314,7 +412,7 @@ export default {
   line-height: var(--leading-relaxed);
 }
 
-/* 精选新闻区域 */
+/* Featured News Section */
 .featured-section {
   margin-bottom: var(--spacing-2xl);
 }
@@ -368,7 +466,7 @@ export default {
   transform: scale(1.05);
 }
 
-/* 信任度指示器 */
+/* Trust Indicator */
 .trust-indicator {
   position: absolute;
   top: var(--spacing-md);
@@ -404,7 +502,7 @@ export default {
   font-weight: var(--font-bold);
 }
 
-/* 信任度进度条 */
+/* Trust Progress Bar */
 .trust-progress-bar-container {
   position: absolute;
   bottom: 0;
@@ -438,7 +536,7 @@ export default {
   flex-direction: column;
 }
 
-/* 信任度徽章 */
+/* Trust Badge */
 .trust-badge {
   display: inline-flex;
   align-items: center;
@@ -508,7 +606,7 @@ export default {
   font-style: italic;
 }
 
-/* 新闻列表区域 */
+/* News List Section */
 .news-section {
   margin-bottom: var(--spacing-2xl);
 }
@@ -607,7 +705,7 @@ export default {
   }
 }
 
-/* 滚动到顶部按钮 */
+/* Scroll to Top Button */
 .scroll-top-button {
   position: fixed;
   bottom: var(--spacing-xl);

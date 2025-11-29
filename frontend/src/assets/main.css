@@ -1,28 +1,28 @@
-/* Truth Moment 全局样式系统 */
+/* Truth Moment Global Style System */
 
-/* === CSS 变量定义 === */
+/* === CSS Variables Definition === */
 :root {
-  /* 品牌颜色 */
+  /* Brand Colors */
   --primary-color: #1E1E2F;
   --secondary-color: #FFD43B;
   --accent-color: #4D5DFD;
   
-  /* 背景颜色 */
+  /* Background Colors */
   --background-color: #F7F8FA;
   --card-background: #FFFFFF;
   --surface-background: #F8F9FD;
   
-  /* 文本颜色 */
+  /* Text Colors */
   --text-primary: #1E1E2F;
   --text-secondary: #6E7191;
   --text-tertiary: #8F92A1;
   --text-light: #FFFFFF;
   
-  /* 边框和分隔线 */
+  /* Border and Divider */
   --border-color: #E2E8F0;
   --divider-color: #F1F5F9;
   
-  /* 信任度颜色 */
+  /* Trust Level Colors */
   --trust-high-color: #2ECC71;
   --trust-medium-color: #F39C12;
   --trust-low-color: #E74C3C;
@@ -30,19 +30,19 @@
   --trust-medium-bg: rgba(243, 156, 18, 0.1);
   --trust-low-bg: rgba(231, 76, 60, 0.1);
   
-  /* 状态颜色 */
+  /* Status Colors */
   --success-color: #2ECC71;
   --warning-color: #F39C12;
   --error-color: #E74C3C;
   --info-color: #3498DB;
   
-  /* 阴影 */
+  /* Shadows */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
   
-  /* 间距系统 */
+  /* Spacing System */
   --spacing-xs: 0.25rem;  /* 4px */
   --spacing-sm: 0.5rem;   /* 8px */
   --spacing-md: 1rem;     /* 16px */
@@ -51,23 +51,23 @@
   --spacing-2xl: 3rem;    /* 48px */
   --spacing-3xl: 4rem;    /* 64px */
   
-  /* 圆角 */
+  /* Border Radius */
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-full: 9999px;
   
-  /* 过渡动画 */
+  /* Transitions */
   --transition-base: 0.2s ease-in-out;
   --transition-fast: 0.15s ease-out;
   --transition-slow: 0.3s ease-in-out;
   
-  /* 字体 */
+  /* Fonts */
   --font-primary: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-display: 'Inter', 'Roboto', sans-serif;
   
-  /* 字体大小 */
+  /* Font Sizes */
   --font-xs: 0.75rem;
   --font-sm: 0.875rem;
   --font-base: 1rem;
@@ -78,13 +78,13 @@
   --font-3xl: 2.5rem;
   --font-4xl: 3rem;
   
-  /* 行高 */
+  /* Line Heights */
   --leading-tight: 1.25;
   --leading-normal: 1.5;
   --leading-relaxed: 1.75;
   --leading-loose: 2;
   
-  /* 字重 */
+  /* Font Weights */
   --font-light: 300;
   --font-regular: 400;
   --font-medium: 500;
@@ -92,14 +92,14 @@
   --font-bold: 700;
   --font-extrabold: 800;
   
-  /* 布局常量 */
+  /* Layout Constants */
   --header-height: 72px;
   --footer-height: 200px;
   --container-width: 1200px;
   --sidebar-width: 280px;
 }
 
-/* === 全局重置 === */
+/* === Global Reset === */
 *,
 *::before,
 *::after {
@@ -108,7 +108,7 @@
   box-sizing: border-box;
 }
 
-/* === 基础元素样式 === */
+/* === Base Element Styles === */
 html {
   font-size: 16px;
   line-height: 1.5;
@@ -126,7 +126,7 @@ body {
   overflow-x: hidden;
 }
 
-/* === 标题样式 === */
+/* === Heading Styles === */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: var(--font-semibold);
@@ -142,7 +142,7 @@ h4 { font-size: var(--font-lg); }
 h5 { font-size: var(--font-md); }
 h6 { font-size: var(--font-base); }
 
-/* === 文本元素 === */
+/* === Text Elements === */
 p {
   margin-bottom: var(--spacing-md);
   line-height: var(--leading-relaxed);
@@ -159,7 +159,7 @@ a:hover {
   text-decoration: underline;
 }
 
-/* === 列表样式 === */
+/* === List Styles === */
 ul, ol {
   margin-bottom: var(--spacing-md);
   padding-left: var(--spacing-xl);
@@ -170,14 +170,14 @@ li {
   line-height: var(--leading-relaxed);
 }
 
-/* === 图片样式 === */
+/* === Image Styles === */
 img {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
-/* === 表单元素 === */
+/* === Form Elements === */
 input, textarea, select, button {
   font-family: inherit;
   font-size: inherit;

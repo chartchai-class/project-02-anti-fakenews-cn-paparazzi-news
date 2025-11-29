@@ -3,20 +3,20 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router/index.js'
 
-// 创建应用实例
+// Create application instance
 const app = createApp(App)
 
-// 使用Pinia进行状态管理
+// Use Pinia for state management
 const pinia = createPinia()
 app.use(pinia)
 
-// 使用路由
+// Use router
 app.use(router)
 
-// 初始化认证状态
+// Initialize authentication state
 import { useAuthStore } from './stores/authStore'
 const authStore = useAuthStore()
 authStore.init()
 
-// 挂载应用
+// Mount application
 app.mount('#app')

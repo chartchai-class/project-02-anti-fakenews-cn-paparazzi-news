@@ -8,20 +8,20 @@
     </div>
     
     <!-- 分类标签栏 -->
-    <CategoryTabs />
+    <CategoryTabs :newsCounts="newsCounts" />
     
     <!-- 加载状态 -->
     <div v-if="isLoading" class="loading-container">
       <div class="loading-spinner"></div>
-      <p>正在加载新闻...</p>
+      <p>Loading news...</p>
     </div>
     
     <!-- 错误状态 -->
     <div v-else-if="error" class="error-container">
       <div class="error-icon">⚠️</div>
-      <h3>加载失败</h3>
+      <h3>Failed to Load</h3>
       <p>{{ error }}</p>
-      <button class="retry-button" @click="fetchCategoryNews">重试</button>
+      <button class="retry-button" @click="fetchCategoryNews">Retry</button>
     </div>
     
     <!-- 内容区域 -->
@@ -29,22 +29,22 @@
       <!-- 分类新闻列表 -->
       <section class="category-news-section">
         <div class="news-stats">
-          <span class="news-count">共 {{ filteredNews.length }} 条新闻</span>
+          <span class="news-count">{{ filteredNews.length }} News Articles</span>
           <div class="sort-controls">
-            <label for="sort-select">排序：</label>
+            <label for="sort-select">Sort by:</label>
             <select id="sort-select" v-model="sortOption" @change="applySort">
-              <option value="newest">最新发布</option>
-              <option value="oldest">最早发布</option>
-              <option value="highestTrust">最高可信度</option>
-              <option value="lowestTrust">最低可信度</option>
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="highestTrust">Highest Trust</option>
+              <option value="lowestTrust">Lowest Trust</option>
             </select>
           </div>
         </div>
         
         <div v-if="filteredNews.length === 0" class="empty-state">
           <div class="empty-icon">📰</div>
-          <p>该分类暂无新闻内容</p>
-          <router-link to="/" class="back-home-link">返回首页</router-link>
+          <p>No news content in this category</p>
+          <router-link to="/" class="back-home-link">Back to Home</router-link>
         </div>
         
         <div v-else class="news-grid">
@@ -89,6 +89,7 @@ export default {
     // 计算属性
     const isLoading = computed(() => newsStore.isLoading);
     const error = computed(() => newsStore.error);
+    const newsCounts = computed(() => newsStore.newsCounts);
     
     // 获取当前分类的新闻
     const filteredNews = computed(() => {
@@ -120,11 +121,11 @@ export default {
     // 格式化分类名称显示
     const formattedCategoryName = computed(() => {
       const categoryMap = {
-        'Politics': '政治新闻',
-        'Society': '社会新闻',
-        'Environment': '环境新闻',
-        'Education': '教育新闻',
-        'Entertainment': '娱乐新闻'
+        'Politics': 'Politics News',
+        'Society': 'Society News',
+        'Environment': 'Environment News',
+        'Education': 'Education News',
+        'Entertainment': 'Entertainment News'
       };
       
       return categoryMap[categoryName.value] || categoryName.value;
@@ -146,14 +147,14 @@ export default {
     // 获取分类描述
     const getCategoryDescription = computed(() => {
       const descriptionMap = {
-        'Politics': '关注国内外政治动态，了解时事热点',
-        'Society': '聚焦社会民生，洞察社会现象',
-        'Environment': '关心环境问题，探索可持续发展',
-        'Education': '追踪教育改革，关注学术前沿',
-        'Entertainment': '掌握娱乐资讯，感受文化脉动'
+        'Politics': 'Follow domestic and international political developments, understand current affairs',
+        'Society': 'Focus on social livelihood, insight into social phenomena',
+        'Environment': 'Care about environmental issues, explore sustainable development',
+        'Education': 'Track education reforms, pay attention to academic frontiers',
+        'Entertainment': 'Master entertainment information, feel cultural pulse'
       };
       
-      return descriptionMap[categoryName.value] || '浏览该分类的最新新闻';
+      return descriptionMap[categoryName.value] || 'Browse the latest news in this category';
     });
     
     // 获取分类新闻
@@ -196,7 +197,8 @@ export default {
       sortedNews,
       sortOption,
       fetchCategoryNews,
-      applySort
+      applySort,
+      newsCounts
     };
   }
 };

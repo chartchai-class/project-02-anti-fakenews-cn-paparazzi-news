@@ -1,47 +1,79 @@
 <template>
   <div class="login-container">
     <div class="login-form">
-      <h1>用户登录</h1>
-      <p>登录以访问您的 Truth Moment 账号</p>
+      <h1>Universal Login Portal</h1>
+      <p>Login with your account credentials below</p>
+
+      <!-- User Role Selection -->
+      <div class="role-selection">
+        <label class="role-label">
+          <input 
+            type="radio" 
+            v-model="selectedRole" 
+            value="user" 
+            class="role-radio"
+          >
+          <span class="role-text">Regular User</span>
+        </label>
+        <label class="role-label">
+          <input 
+            type="radio" 
+            v-model="selectedRole" 
+            value="admin" 
+            class="role-radio"
+          >
+          <span class="role-text">Administrator</span>
+        </label>
+      </div>
       
       <form @submit.prevent="handleLogin">
         <div class="form-group">
-          <label for="username">用户名</label>
+          <label for="username">{{ selectedRole === 'admin' ? 'Administrator Username' : 'Username / Email' }}</label>
           <input
             type="text"
             id="username"
             v-model="form.username"
             :class="{ 'is-invalid': errors.username }"
-            placeholder="输入您的用户名"
+            :placeholder="selectedRole === 'admin' ? 'Enter administrator username' : 'Enter your username or email'"
+            :disabled="isLoading"
             required
           />
           <div v-if="errors.username" class="error-message">{{ errors.username }}</div>
         </div>
         
         <div class="form-group">
-          <label for="password">密码</label>
+          <label for="password">Password</label>
           <input
             type="password"
             id="password"
             v-model="form.password"
             :class="{ 'is-invalid': errors.password }"
-            placeholder="输入您的密码"
+            :placeholder="selectedRole === 'admin' ? 'Enter administrator password' : 'Enter your password'"
+            :disabled="isLoading"
             required
           />
           <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
         </div>
         
-        <!-- 错误消息 -->
+        <!-- Error Message -->
         <span v-if="loginError" class="error-message">{{ loginError }}</span>
         
         <div class="form-group">
           <button type="submit" class="login-button" :disabled="isLoading">
-            {{ isLoading ? '登录中...' : '登录' }}
+            {{ isLoading ? 'Logging in...' : (selectedRole === 'admin' ? 'Admin Login' : 'Login') }}
           </button>
         </div>
         
-        <div class="register-link">
-          还没有账号？<router-link to="/register">立即注册</router-link>
+        <div class="login-info">
+          <div class="login-tip primary">
+            <small><strong>{{ selectedRole === 'admin' ? 'Administrator login will access admin dashboard' : 'System will automatically redirect based on your role' }}</strong></small>
+          </div>
+          <p v-if="selectedRole === 'admin'" class="admin-note">
+            Test Account: admin / admin123
+          </p>
+          <div class="register-link">
+            Don't have an account? <router-link to="/register">Register Now</router-link>
+          </div>
         </div>
       </form>
     </div>
@@ -61,6 +93,7 @@ export default {
     
     const isLoading = ref(false)
     const loginError = ref('')
+    const selectedRole = ref('user') // Default to regular user
     
     const form = reactive({
       username: '',
@@ -72,67 +105,80 @@ export default {
       password: ''
     })
     
-    // 表单验证
+    // Form validation
     const validateForm = () => {
       let isValid = true
       
-      // 重置错误
+      // Reset errors
       errors.username = ''
       errors.password = ''
       
-      // 验证用户名
+      // Validate username
       if (!form.username.trim()) {
-        errors.username = '请输入用户名'
+        errors.username = 'Please enter username'
         isValid = false
       }
       
-      // 验证密码
+      // Validate password
       if (!form.password) {
-        errors.password = '请输入密码'
+        errors.password = 'Please enter password'
         isValid = false
       }
       
       return isValid
     }
     
-    // Handle login
+    // Handle login for both user and admin
     const handleLogin = async () => {
-      // Validate form
-      if (!validateForm()) {
-        return
-      }
-      
-      isLoading.value = true
-      loginError.value = ''
-      
-      try {
-        const success = await authStore.login(form.username, form.password)
-        
-        if (success) {
-          // 登录成功后导航到首页或管理页面
-          // 根据用户角色决定跳转目标
-          if (authStore.isAdmin) {
-            router.push('/admin')
-          } else {
-            router.push('/home')
-          }
-        } else {
-          loginError.value = '登录失败，请检查您的用户名和密码'
+        // Validate form
+        if (!validateForm()) {
+          return
         }
-      } catch (error) {
-        loginError.value = '登录过程中发生错误，请稍后再试'
-        console.error('Login error:', error)
-      } finally {
-        isLoading.value = false
+        
+        isLoading.value = true
+        loginError.value = ''
+        
+        try {
+          // Handle special case for administrator login
+          let success = false;
+          
+          // If administrator role is selected and credentials match test account
+          if (selectedRole.value === 'admin' && form.username === 'admin' && form.password === 'admin123') {
+            // 直接调用authStore的登录方法
+            success = await authStore.login(form.username, form.password);
+          } else {
+            // Regular login flow
+            success = await authStore.login(form.username, form.password);
+          }
+          
+          if (success) {
+            // Redirect based on actual user role (not selected role for security)
+            if (authStore.isAdmin) {
+              router.push('/admin');
+            } else {
+              router.push('/home');
+            }
+          } else {
+            // Display different error messages based on selected role
+            loginError.value = selectedRole.value === 'admin' 
+              ? 'Administrator login failed, please check username and password' 
+              : 'Login failed, please check your credentials';
+          }
+        } catch (error) {
+          loginError.value = 'Authentication error, please try again';
+          console.error('Login error:', error);
+        } finally {
+          isLoading.value = false;
+        }
       }
-    }
     
     return {
       form,
       errors,
       isLoading,
       loginError,
-      handleLogin
+      handleLogin,
+      selectedRole
     }
   }
 }
@@ -142,6 +188,57 @@ export default {
 .login-container {
   display: flex;
   justify-content: center;
+  
+  .role-selection {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+  
+  .role-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+  
+  .role-label:hover {
+    background: #e9ecef;
+  }
+  
+  .role-radio {
+    width: 18px;
+    height: 18px;
+    accent-color: #409eff;
+  }
+  
+  .role-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #606266;
+  }
+  
+  .role-radio:checked + .role-text {
+    color: #409eff;
+    font-weight: 600;
+  }
+  
+  .admin-note {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f0f9ff;
+    border: 1px solid #91d5ff;
+    border-radius: 6px;
+    color: #1890ff;
+    font-size: 14px;
+    text-align: center;
+  }
   align-items: center;
   min-height: 100vh;
   background-color: #f5f5f5;
@@ -231,21 +328,56 @@ export default {
   cursor: not-allowed;
 }
 
-.register-link {
-  text-align: center;
-  margin-top: 20px;
-  color: #666;
-}
+.login-info {
+    margin-top: 20px;
+  }
 
-.register-link a {
-  color: #4a90e2;
-  text-decoration: none;
-  font-weight: 500;
-}
+  .register-link {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #666;
+  }
 
-.register-link a:hover {
-  text-decoration: underline;
-}
+  .register-link a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .register-link a:hover {
+    text-decoration: underline;
+  }
+
+  .login-subtitle {
+      text-align: center;
+      margin: 10px 0 20px;
+      padding: 10px;
+      background-color: #f5f7fa;
+      border-radius: 4px;
+      border-left: 3px solid #4a90e2;
+    }
+
+    .login-subtitle small {
+      font-size: 13px;
+      color: #555;
+    }
+
+    .login-tip {
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .login-tip.small {
+      font-size: 12px;
+      color: #888;
+      font-style: italic;
+    }
+
+    .login-tip.primary {
+      color: #4a90e2;
+      font-weight: 500;
+      font-size: 13px;
+    }
 
 @media (max-width: 480px) {
   .login-form {
